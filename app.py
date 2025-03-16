@@ -1,24 +1,17 @@
-import joblib
-import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 
-# Load the trained ML model
-model = joblib.load("random_forest_model.pkl")
-
-# Initialize Flask app
 app = Flask(__name__)
 
-@app.route("/predict", methods=["POST"])
-def predict():
-    try:
-        data = request.json  # Get input JSON data
-        features = np.array(data["features"]).reshape(1, -1)  # Convert to array
-        prediction = model.predict(features)[0]  # Predict malicious (-1) or safe (1)
+@app.route("/")
+def home():
+    return jsonify({"message": "API is running!"})
 
-        return jsonify({"prediction": int(prediction)})  # Return JSON response
-    except Exception as e:
-        return jsonify({"error": str(e)})
+@app.route("/check", methods=["POST"])
+def check_phishing():
+    data = request.get_json()
+    if not data or "website" not in data:
+        return jsonify({"error": "Invalid request"}), 400
+    return jsonify({"result": "safe"})  # Dummy response for now
 
-# Run the API locally for testing
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)
