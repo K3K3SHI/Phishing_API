@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import pickle
 import numpy as np
 import os
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Load the ML model
 def load_model():
